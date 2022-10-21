@@ -87,9 +87,31 @@ for j in df_mang['Job']:
  i = i+1
 df_mang['TimeToEnter'] = TimeToEnter2
 
-# Записываем датафрейм в Excel
+# Записываем датафрейм в Excel 2
 vExcel(df_mang,'Second')
 
 
-# Создание коллекции
+# Создание коллекции 2
 ToMongoDBColl(df_mang,"35AndMore")
+
+
+# Третье условие
+df_arch = bace_df
+TimeToEnter3 = []
+i = 0
+for j in df_mang['Job']:
+ index = j.find('architect')
+ age = ages[i]
+ if index>0:
+   TimeToEnter3.append('10:30')
+ else:
+   TimeToEnter3.append(None)
+ i = i+1
+df_arch['TimeToEnter'] = TimeToEnter3
+
+# Записываем датафрейм в Excel 3
+vExcel(df_arch,'Third')
+
+
+# Создание коллекции 3
+ToMongoDBColl(df_arch,"ArchitectEnterTime")
