@@ -1,7 +1,7 @@
 import pymongo
 import pandas as pd
 import numpy as np
-from pyexcelerate import Workbook, Style
+from pyexcelerate import Workbook, Style,Format
 from datetime import datetime
 
 
@@ -41,3 +41,10 @@ for j in bace_df['Job']:
 
 # Добовляем новый столбец в датафрейм
 df_dev['TimeToEnter'] = TimeToEnter
+
+# Зписываем датафрейм в Excel
+values = [df_dev.columns] + list(df_dev.values)
+wb = Workbook()
+ws = wb.new_sheet('sheet name', data=values)
+ws.set_col_style(6,Style(format=Format('dd/mm/yy hh:mm:ss')))
+wb.save('First.xlsx')
