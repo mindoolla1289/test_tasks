@@ -8,6 +8,11 @@ from datetime import datetime
 # формат для даты
 formatt = '%Y-%m-%dT%H:%M:%S'
 
+#Подключение к mongodb
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["admin"]
+
+
 # заданные данные
 data = {
   "id":[1, 2, 3, 4, 5, 6, 7],
@@ -21,6 +26,21 @@ data = {
 # Базывый датафрейм
 bace_df = pd.DataFrame(data)
 
+
+# Записовает dataframe в Excel
+def vExcel(DataF,name:str):
+    values = [DataF.columns] + list(DataF.values)
+    wb = Workbook()
+    ws = wb.new_sheet('sheet name', data=values)
+    ws.set_col_style(6, Style(format=Format('dd/mm/yy hh:mm:ss')))
+    wb.save(f'{name}.xlsx')
+
+# Создает новую коллекцию
+def ToMongoDBColl(DataF,name:str):
+    df =DataF
+    mycol = mydb[name]
+    mycol.insert_many(df.to_dict('records'))
+
 # Датафрейм для разработчиков
 df_dev = bace_df
 
@@ -28,7 +48,7 @@ df_dev = bace_df
 TimeToEnter = []
 ages = bace_df['Age']
 i = 0
-for j in bace_df['Job']:
+for j in df_dev['Job']:
  index = j.find('Developer')
  age = ages[i]
  if index>0 and age<=21:
@@ -36,22 +56,40 @@ for j in bace_df['Job']:
  elif index>0 and age>21:
    TimeToEnter.append('9:15')
  else:
-   TimeToEnter.append('None')
+   TimeToEnter.append(None)
  i = i+1
 
 # Добовляем новый столбец в датафрейм
 df_dev['TimeToEnter'] = TimeToEnter
 
 # Записываем датафрейм в Excel
-values = [df_dev.columns] + list(df_dev.values)
-wb = Workbook()
-ws = wb.new_sheet('sheet name', data=values)
-ws.set_col_style(6,Style(format=Format('dd/mm/yy hh:mm:ss')))
-wb.save('First.xlsx')
+vExcel(df_dev,'First')
+
 
 # Создание коллекции
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["admin"]
+ToMongoDBColl(df_dev,"18MoreAnd21andLess")
 
-mycol = mydb["18MoreAnd21andLess"]
-mycol.insert_many(df_dev.to_dict('records'))
+
+
+# Второе условие
+df_mang = bace_df
+TimeToEnter2 = []
+i = 0
+for j in df_mang['Job']:
+ index = j.find('Manager')
+ age = ages[i]
+ if index>0 and age>=35:
+   TimeToEnter2.append('11:00')
+ elif index>0 and age<35:
+   TimeToEnter2.append('11:30')
+ else:
+   TimeToEnter2.append(None)
+ i = i+1
+df_mang['TimeToEnter'] = TimeToEnter2
+
+# Записываем датафрейм в Excel
+vExcel(df_mang,'Second')
+
+
+# Создание коллекции
+ToMongoDBColl(df_mang,"35AndMore")
