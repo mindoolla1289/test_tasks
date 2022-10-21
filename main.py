@@ -4,7 +4,11 @@ import numpy as np
 from pyexcelerate import Workbook, Style
 from datetime import datetime
 
+
+# формат для даты
 formatt = '%Y-%m-%dT%H:%M:%S'
+
+# заданные данные
 data = {
   "id":[1, 2, 3, 4, 5, 6, 7],
   "Name": ["Alex","Justin","Set","Carlos","Gareth","John","Bob"],
@@ -14,4 +18,24 @@ data = {
   "Datetime":[datetime.strptime('2022-01-01T09:45:12',formatt), datetime.strptime('2022-01-01T11:50:25',formatt), datetime.strptime('2022-01-01T10:00:45',formatt), datetime.strptime('2022-01-01T09:07:36',formatt), datetime.strptime('2022-01-01T11:54:10',formatt), datetime.strptime('2022-01-01T09:56:40',formatt), datetime.strptime('2022-01-01T09:52:45',formatt)]
 }
 
+# Базывый датафрейм
 bace_df = pd.DataFrame(data)
+
+# Датафрейм для разработчиков
+df_dev = bace_df
+
+# 1 условие
+TimeToEnter = []
+ages = bace_df['Age']
+i = 0
+for j in bace_df['Job']:
+ index = j.find('Developer')
+ age = ages[i]
+ if index>0 and age<=21:
+   TimeToEnter.append('9:00')
+ elif index>0 and age>21:
+   TimeToEnter.append('9:15')
+ else:
+   TimeToEnter.append('None')
+ i = i+1
+
