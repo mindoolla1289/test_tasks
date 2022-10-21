@@ -39,3 +39,5 @@ for j in bace_df['Job']:
    TimeToEnter.append('None')
  i = i+1
 
+# Добовляем новый столбец в датафрейм
+df_dev['TimeToEnter'] = TimeToEnter
