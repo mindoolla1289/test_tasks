@@ -42,9 +42,16 @@ for j in bace_df['Job']:
 # Добовляем новый столбец в датафрейм
 df_dev['TimeToEnter'] = TimeToEnter
 
-# Зписываем датафрейм в Excel
+# Записываем датафрейм в Excel
 values = [df_dev.columns] + list(df_dev.values)
 wb = Workbook()
 ws = wb.new_sheet('sheet name', data=values)
 ws.set_col_style(6,Style(format=Format('dd/mm/yy hh:mm:ss')))
 wb.save('First.xlsx')
+
+# Создание коллекции
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["admin"]
+
+mycol = mydb["18MoreAnd21andLess"]
+mycol.insert_many(df_dev.to_dict('records'))
